@@ -24,16 +24,17 @@ class SaFeatureSelector():
                 continue
             if 1 not in self.state[:13]:
                 continue
-            break
-        new_state=self.state.copy()
-        new_state[i]=self.state[j]
-        new_state[j]=self.state[i]
-        return new_state
+            new_state=self.state.copy()
+            new_state[i]=self.state[j]
+            new_state[j]=self.state[i]
+            if 1 not in new_state[:13]:
+                continue
+            return new_state
 
 
 
     def run(self):
-        while self.T_k>0.001:
+        while self.T_k>0.01:
             sub_optimal=self.state_score
             sub_optimal_state=self.state.copy()
 
@@ -68,4 +69,4 @@ class SaFeatureSelector():
             if sub_optimal>self.optimal:
                 self.optimal=sub_optimal
                 self.optimal_state=sub_optimal_state.copy()
-            print("current_dim",[j for j in range(13) if self.optimal_state[j]==1],"current_optimal",self.optimal)
+            print("optimal",self.optimal,"epoch_optimal",sub_optimal)

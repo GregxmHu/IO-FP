@@ -60,3 +60,5 @@ class TsFeatureSelector():
                 if len(self.table)>self.table_size:
                     self.table=self.table[:self.table_size]
             print("optimal:",self.optimal,"epoch optimal:",epoch_optimal)
+            self.state_score_trace.append(epoch_optimal)
+            
