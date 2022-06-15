@@ -46,9 +46,8 @@ class TsFeatureSelector():
             else:
                 self.state=best[1].copy()
                 return best[0]
-        
     def run(self):
-        for _ in range(100):
+        for _ in range(10):
             best_move=self.search()
             selected_dim=[j for j in range(13) if self.state[j]==1]
             self.knn.update(selected_dim)

@@ -1,6 +1,7 @@
 import random 
 from knn import KnnForWineClassify
 import math
+from tqdm import tqdm
 class SaFeatureSelector():
     def __init__(self,dataset,id2label,k,T_k,gamma):
         self.T_k=T_k
@@ -31,16 +32,11 @@ class SaFeatureSelector():
                 continue
             return new_state
 
-
-
     def run(self):
-        while self.T_k>0.01:
+        while self.T_k>100:
             sub_optimal=self.state_score
             sub_optimal_state=self.state.copy()
-
-            for i in range(100):
-                self.state_score_trace.append(self.state_score)
-                self.state_trace.append(self.state[:13])
+            for i in tqdm(range(100)):
                 new_state=self.search()
                 selected_dim=[j for j in range(13) if new_state[j]==1]
                 self.knn.update(selected_dim)
@@ -54,7 +50,6 @@ class SaFeatureSelector():
                     if self.state_score>sub_optimal:
                         sub_optimal=new_state_score
                         sub_optimal_state=new_state.copy()
-
                 else:
                     kesi=random.uniform(0,1)
                     delta_f=self.state_score-new_state_score
@@ -65,8 +60,10 @@ class SaFeatureSelector():
                     else:
                         selected_dim=[j for j in range(13) if self.state[j]==1]
                         self.knn.update(selected_dim)
+            self.state_score_trace.append(self.state_score)
+            self.state_trace.append(self.state[:13])
             self.T_k*=self.gamma
             if sub_optimal>self.optimal:
                 self.optimal=sub_optimal
                 self.optimal_state=sub_optimal_state.copy()
-            print("optimal",self.optimal,"epoch_optimal",sub_optimal)
+            print("current_t:",self.T_k,"optimal",self.optimal,"epoch_optimal",sub_optimal)
